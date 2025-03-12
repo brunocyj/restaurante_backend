@@ -2,7 +2,7 @@ import logging
 from app.core.config import settings
 from fastapi import FastAPI
 from app.db.init_db import init_db
-from app.routers import auth
+from app.routers import auth, cardapio
 
 #log
 logging.basicConfig(
@@ -22,6 +22,7 @@ app = FastAPI(
 
 
 app.include_router(auth.router)
+app.include_router(cardapio.router)
 
 @app.get("/health", tags=["Saúde"])
 def health_check():
