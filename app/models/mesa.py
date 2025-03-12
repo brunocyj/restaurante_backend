@@ -23,7 +23,7 @@ class Mesa(Base):
     ativa = Column(Boolean, default=True)
     tipo_cardapio_id = Column(UUID, ForeignKey("tipos_cardapio.id"), nullable=False)
     
-    pedidos = relationship("Pedido", back_populates="mesa")
+    #pedidos = relationship("Pedido", back_populates="mesa")
     tipo_cardapio = relationship("TipoCardapio")
     
     def __repr__(self):

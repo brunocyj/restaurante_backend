@@ -2,8 +2,7 @@
 Repositorio para as funcionalidades relacionadas ao cardápio.
 """
 from typing import  List, Optional, Dict, Any
-from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import and_, asc
+from sqlalchemy.orm import Session
 from uuid import UUID
 
 from app.models.cardapio import TipoCardapio, Categoria, Produto

@@ -75,7 +75,7 @@ class Produto(BaseModel):
     descricao: Optional[str] = None
     preco: Decimal = Field(..., gt=0, description="Preço do produto")
     imagem_url: Optional[str] = None
-    disponivel: bool = True
+    ativo: bool = True
     categoria_id: UUID = Field(..., description="ID da categoria")
 
     class Config:
@@ -92,7 +92,7 @@ class ProdutoUpdate(BaseModel):
     descricao: Optional[str] = None
     preco: Optional[Decimal] = Field(None, gt=0)
     imagem_url: Optional[str] = None
-    disponivel: Optional[bool] = None
+    ativo: Optional[bool] = None
     categoria_id: Optional[UUID] = None
 
 class ProdutoWithCategoria(Produto):

@@ -141,9 +141,12 @@ def verify_token(token: str) -> TokenPayload:
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-def revoke_token(token: str, jti: str) -> None:
+def revoke_token(token: str) -> None:
     """
     Revoga um token JWT
+    
+    Args:
+        token: Token JWT a ser revogado
     """
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[ALGORITHM])
@@ -155,10 +158,10 @@ def revoke_token(token: str, jti: str) -> None:
         jti = payload.get("jti")
         if jti:
             token_blacklist.add_jti_to_blacklist(jti, expires_at)
-            logger.info(f"Token JWT revogado: {token}")
+            logger.info(f"Token JWT revogado: {token[:10]}...")
 
     except (JWTError, ValidationError) as e :
-        logger.error(f"Erro ao revogar token: {token} : {e}")
+        logger.error(f"Erro ao revogar token: {token[:10]}... : {e}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token inválido",

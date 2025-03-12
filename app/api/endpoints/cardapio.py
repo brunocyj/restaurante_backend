@@ -24,9 +24,7 @@ from app.schemas.cardapio import (
     Produto,
     ProdutoUpdate,
     ProdutoDB,
-    ProdutoWithCategoria,
-    CategoriaWithProdutos,
-    CardapioCompleto
+    ProdutoWithCategoria
 )
 
 router = APIRouter()

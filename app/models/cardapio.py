@@ -48,7 +48,7 @@ class Produto(Base):
     descricao = Column(Text)
     preco = Column(Numeric(10, 2), nullable=False)
     imagem_url = Column(String(255))
-    disponivel = Column(Boolean, default=True)
+    ativo = Column(Boolean, default=True)
     
     categoria = relationship("Categoria", back_populates="produtos")
     #items_pedido = relationship("ItemPedido", back_populates="produto")
