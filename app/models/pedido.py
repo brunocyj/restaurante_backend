@@ -1,6 +1,5 @@
 from sqlalchemy import Column, String, Text, Boolean, ForeignKey, Integer, Numeric, UUID, DateTime
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
 from uuid import uuid4
 from enum import Enum as PyEnum
 from datetime import datetime
@@ -18,9 +17,8 @@ def get_brasil_now():
 
 class StatusPedido(str, PyEnum):
     ABERTO = "ABERTO"
-    EM_PREPARO = "EM_PREPARO"
-    PRONTO = "PRONTO"
-    ENTREGUE = "ENTREGUE"
+    EM_ANDAMENTO = "EM ANDAMENTO"
+    FINALIZADO = "FINALIZADO"
     CANCELADO = "CANCELADO"
 
 class Pedido(Base):

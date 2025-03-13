@@ -51,7 +51,7 @@ class Produto(Base):
     ativo = Column(Boolean, default=True)
     
     categoria = relationship("Categoria", back_populates="produtos")
-    #items_pedido = relationship("ItemPedido", back_populates="produto")
+    items_pedido = relationship("ItemPedido", back_populates="produto")
     
     def __repr__(self):
         return f"<Produto(id={self.id}, nome={self.nome}, preco={self.preco})>" 
