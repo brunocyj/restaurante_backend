@@ -33,7 +33,7 @@ app = FastAPI(
     docs_url="/docs" if not settings.is_production else None,
     redoc_url="/redoc" if not settings.is_production else None,
     middleware=middleware,
-    redirect_slashes = False
+    redirect_slashes = True
 )
 
 app.add_middleware(
