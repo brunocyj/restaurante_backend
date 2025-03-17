@@ -8,14 +8,14 @@ class Settings:
     PROJECT_DESCRIPTION: str = "API para gerenciamento de restaurante"
     PROJECT_VERSION: str = "1.0.0"
 
-    DB_HOST: str = os.getenv("DB_HOST", "localhost")
-    DB_PORT: str = os.getenv("DB_PORT", "5432")
-    DB_USER: str = os.getenv("DB_USER", "postgres")
-    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "meizizi")
-    DB_NAME: str = os.getenv("DB_NAME", "postgres")
+    DB_HOST: str = "nozomi.proxy.rlwy.net"
+    DB_PORT: str = "36651"
+    DB_USER: str = "postgres"
+    DB_PASSWORD: str = "FqpunTuoXwljoBssZoEwIKZREZWveopP"
+    DB_NAME: str = "railway"
     
-    HOST: str = os.getenv("HOST", "0.0.0.0")
-    PORT: int = int(os.getenv("PORT", "8000"))
+    HOST: str = "0.0.0.0"
+    PORT: int = 8000
     
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     RELOAD: bool = os.getenv("RELOAD", "True").lower() == "true"
@@ -31,6 +31,7 @@ class Settings:
     
     @property
     def DATABASE_URL(self) -> str:
+        print(f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}")
         return f"postgresql://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
     
     @property

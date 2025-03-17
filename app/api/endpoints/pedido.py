@@ -107,7 +107,8 @@ def atualizar_pedido(
         pedido = repository.atualizar_pedido(
             pedido_id=pedido_id,
             status=pedido_in.status,
-            observacao_geral=pedido_in.observacao_geral
+            observacao_geral=pedido_in.observacao_geral,
+            mesa_id = pedido_in.mesa_id
         )
         
         if not pedido:

@@ -126,7 +126,8 @@ class PedidoRepository:
     
     def atualizar_pedido(self, pedido_id: UUID, 
                         status: Optional[StatusPedido] = None,
-                        observacao_geral: Optional[str] = None) -> Optional[Pedido]:
+                        observacao_geral: Optional[str] = None,
+                        mesa_id: Optional[str] = None) -> Optional[Pedido]:
         """
         Atualiza um pedido
         
@@ -147,6 +148,9 @@ class PedidoRepository:
         
         if observacao_geral is not None:
             pedido.observacao_geral = observacao_geral
+
+        if mesa_id is not None:
+            pedido.mesa_id = mesa_id
         
         self.db.commit()
         self.db.refresh(pedido)

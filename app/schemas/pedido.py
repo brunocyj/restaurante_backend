@@ -85,6 +85,7 @@ class PedidoUpdate(BaseModel):
     """
     observacao_geral: Optional[str] = None
     status: Optional[StatusPedido] = None
+    mesa_id: Optional[str] = None
 
 class Pedido(PedidoBase):
     """
