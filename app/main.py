@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.init_db import init_db
 from app.routers import auth, cardapio, mesa, pedido
+from starlette.middleware import Middleware
+from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 #log
 logging.basicConfig(
@@ -12,6 +14,14 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+middleware = [
+    Middleware(
+        TrustedHostMiddleware,
+        allowed_hosts = ["*"],
+        proxy_headers = True
+
+    )
+]
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -19,6 +29,8 @@ app = FastAPI(
     version=settings.PROJECT_VERSION,
     docs_url="/docs" if not settings.is_production else None,
     redoc_url="/redoc" if not settings.is_production else None,
+    middleware=middleware,
+    redirect_slashes = False
 )
 
 app.add_middleware(
