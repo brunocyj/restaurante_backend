@@ -8,11 +8,11 @@ class Settings:
     PROJECT_DESCRIPTION: str = "API para gerenciamento de restaurante"
     PROJECT_VERSION: str = "1.0.0"
 
-    DB_HOST: str = os.getenv("DB_HOST", "nozomi.proxy.rlwy.net")
-    DB_PORT: str = os.getenv("DB_PORT", "36651")
-    DB_USER: str = os.getenv("DB_USER", "postgres")
-    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "FqpunTuoXwljoBssZoEwIKZREZWveopP")
-    DB_NAME: str = os.getenv("DB_NAME", "railway")
+    DB_HOST: str = os.getenv("DB_HOST")
+    DB_PORT: str = os.getenv("DB_PORT")
+    DB_USER: str = os.getenv("DB_USER")
+    DB_PASSWORD: str = os.getenv("DB_PASSWORD")
+    DB_NAME: str = os.getenv("DB_NAME")
     
     HOST: str = "0.0.0.0"
     PORT: int = 8000
