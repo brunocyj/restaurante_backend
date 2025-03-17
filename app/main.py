@@ -6,6 +6,7 @@ from app.db.init_db import init_db
 from app.routers import auth, cardapio, mesa, pedido
 from starlette.middleware import Middleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 #log
 logging.basicConfig(
@@ -17,9 +18,11 @@ logger = logging.getLogger(__name__)
 middleware = [
     Middleware(
         TrustedHostMiddleware,
-        allowed_hosts = ["*"],
-        proxy_headers = True
-
+        allowed_hosts=["*"]
+    ),
+    Middleware(
+        ProxyHeadersMiddleware,
+        trusted_hosts=["*"]
     )
 ]
 
