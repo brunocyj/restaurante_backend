@@ -38,7 +38,7 @@ class Notificacao(Base):
     mensagem = Column(String(255), nullable=True, unique=False)
     status = Column(Boolean, default=True)
     criado_em = Column(DateTime, default=get_brasil_now)
-    lido_em = Column(DateTime, default=get_brasil_now)
+    lido_em = Column(DateTime, nullable=True)
 
     mesa = relationship("Mesa", back_populates="notificacoes")
 
