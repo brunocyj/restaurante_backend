@@ -4,7 +4,7 @@ conforme escalando pode adicionar mais
 """
 
 from enum import Enum
-from sqlalchemy import Column, String, Boolean, ForeignKey, UUID, DateTime
+from sqlalchemy import Column, String, Boolean, ForeignKey, UUID, DateTime, JSON
 from sqlalchemy.orm import relationship
 from app.db.session import Base
 from uuid import uuid4
@@ -38,7 +38,7 @@ class Notificacao(Base):
     mensagem = Column(String(255), nullable=True, unique=False)
     status = Column(Boolean, default=True)
     criado_em = Column(DateTime, default=get_brasil_now)
-    lido_em = Column(DateTime, nullable=True)
+    detalhes = Column(JSON, nullable=True)
 
     mesa = relationship("Mesa", back_populates="notificacoes")
 
