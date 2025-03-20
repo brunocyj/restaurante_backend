@@ -201,22 +201,48 @@ class PedidoRepository:
         if not produto:
             raise ValueError(f"Produto com ID {produto_id} não encontrado")
         
-        item = ItemPedido(
-            pedido_id=pedido_id,
-            produto_id=produto_id,
-            quantidade=quantidade,
-            preco_unitario=produto.preco,
-            observacoes=observacoes
-        )
+        # Verificar se o produto já existe no pedido
+        item_existente = self.db.query(ItemPedido).filter(
+            ItemPedido.pedido_id == pedido_id,
+            ItemPedido.produto_id == produto_id,
+            # Considerar observações iguais ou ambas nulas para considerar como mesmo item
+            ((ItemPedido.observacoes == observacoes) | 
+             (ItemPedido.observacoes.is_(None) & (observacoes is None)))
+        ).first()
         
-        self.db.add(item)
-        
-        pedido.valor_total += produto.preco * Decimal(str(quantidade))
-        
-        self.db.commit()
-        self.db.refresh(item)
-        
-        return item
+        if item_existente:
+            # Atualizar a quantidade do item existente
+            valor_antigo = item_existente.preco_unitario * Decimal(str(item_existente.quantidade))
+            
+            # Adicionar a nova quantidade
+            item_existente.quantidade += quantidade
+            
+            # Atualizar o valor total do pedido
+            valor_novo = item_existente.preco_unitario * Decimal(str(item_existente.quantidade))
+            pedido.valor_total = pedido.valor_total - valor_antigo + valor_novo
+            
+            self.db.commit()
+            self.db.refresh(item_existente)
+            
+            return item_existente
+        else:
+            # Criar um novo item se não existir
+            item = ItemPedido(
+                pedido_id=pedido_id,
+                produto_id=produto_id,
+                quantidade=quantidade,
+                preco_unitario=produto.preco,
+                observacoes=observacoes
+            )
+            
+            self.db.add(item)
+            
+            pedido.valor_total += produto.preco * Decimal(str(quantidade))
+            
+            self.db.commit()
+            self.db.refresh(item)
+            
+            return item
     
     def atualizar_item(self, item_id: UUID, 
                       quantidade: Optional[int] = None,
