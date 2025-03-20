@@ -200,8 +200,8 @@ def adicionar_item(
                 detail="Pedido não encontrado"
             )
         
-        # Criar notificação para o item adicionado
-        if pedido.mesa_id:
+        # Criar notificação para o item adicionado apenas se o pedido for automático (manual=false)
+        if pedido.mesa_id and not pedido.manual:
             try:
                 # Criar item simplificado para a notificação
                 item_data = {
