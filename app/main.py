@@ -3,7 +3,7 @@ from app.core.config import settings
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.init_db import init_db
-from app.routers import auth, cardapio, mesa, pedido
+from app.routers import auth, cardapio, mesa, pedido, notification
 from starlette.middleware import Middleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
@@ -48,6 +48,7 @@ app.include_router(auth.router)
 app.include_router(cardapio.router)
 app.include_router(mesa.router)
 app.include_router(pedido.router)
+app.include_router(notification.router)
 
 @app.get("/health", tags=["Saúde"])
 def health_check():

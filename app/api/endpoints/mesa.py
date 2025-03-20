@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.repositories.mesa_repository import MesaRepository
 from app.schemas.mesa import Mesa, MesaUpdate, MesaWithTipoCardapio
+from app.core.notification_service import notification_service
 from uuid import UUID
 
 router = APIRouter()
@@ -82,5 +83,30 @@ def delete_mesa(
     if not mesa:
         raise HTTPException(status_code=404, detail="Mesa não encontrada")
     mesa_repo.delete(db, id = mesa_id)
+
+@router.post("/{mesa_id}/chamar-atendente", status_code=status.HTTP_200_OK)
+def chamar_atendente(
+    *,
+    db: Session = Depends(get_db),
+    mesa_id: str = Path(..., description="ID da mesa que está chamando o atendente")
+) -> Any:
+    """
+    Registra uma chamada de atendente para uma mesa específica.
+    
+    Esta operação cria uma notificação no sistema para alertar os funcionários.
+    """
+    # Verificar se a mesa existe
+    mesa = mesa_repo.get(db, mesa_id)
+    if not mesa:
+        raise HTTPException(status_code=404, detail="Mesa não encontrada")
+    
+    # Criar notificação
+    notification = notification_service.create_waiter_call_notification(mesa_id)
+    
+    return {
+        "success": True,
+        "message": "Atendente chamado com sucesso",
+        "notification_id": notification["id"]
+    }
     
 

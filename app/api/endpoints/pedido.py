@@ -13,6 +13,7 @@ from app.schemas.pedido import (
     Pedido, PedidoCreate, PedidoUpdate, PedidoList,
     ItemPedidoCreate, ItemPedidoUpdate
 )
+from app.core.notification_service import notification_service
 
 router = APIRouter()
 
@@ -104,6 +105,16 @@ def atualizar_pedido(
     """
     try:
         repository = PedidoRepository(db)
+        
+        # Obter pedido original para verificar mudança de status
+        pedido_original = repository.obter_pedido(pedido_id)
+        if not pedido_original:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Pedido não encontrado"
+            )
+            
+        # Atualizar pedido
         pedido = repository.atualizar_pedido(
             pedido_id=pedido_id,
             status=pedido_in.status,
@@ -111,11 +122,25 @@ def atualizar_pedido(
             mesa_id = pedido_in.mesa_id
         )
         
-        if not pedido:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Pedido não encontrado"
-            )
+        # Verificar se o pedido foi finalizado e é automático (não manual)
+        if (pedido_in.status == StatusPedido.FINALIZADO and 
+            pedido_original.status != StatusPedido.FINALIZADO and 
+            not pedido.manual and 
+            pedido.mesa_id):
+            
+            try:
+                # Calcular o total do pedido
+                total = sum(item.quantidade * item.preco for item in pedido.itens)
+                
+                # Criar notificação de pedido finalizado
+                notification_service.create_order_finalized_notification(
+                    pedido_id=str(pedido_id),
+                    mesa_id=str(pedido.mesa_id),
+                    total=total
+                )
+            except Exception as e:
+                # Não interromper o fluxo se a notificação falhar
+                print(f"Erro ao criar notificação de pedido finalizado: {str(e)}")
         
         return pedido
     except ValueError as e:
@@ -174,6 +199,25 @@ def adicionar_item(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Pedido não encontrado"
             )
+        
+        # Criar notificação para o item adicionado
+        if pedido.mesa_id:
+            try:
+                # Criar item simplificado para a notificação
+                item_data = {
+                    "produto_id": str(item_in.produto_id),
+                    "quantidade": item_in.quantidade,
+                    "observacoes": item_in.observacoes
+                }
+                
+                notification_service.create_order_items_notification(
+                    pedido_id=str(pedido_id),
+                    mesa_id=str(pedido.mesa_id),
+                    items=[item_data]
+                )
+            except Exception as e:
+                # Não interromper o fluxo se a notificação falhar
+                print(f"Erro ao criar notificação: {str(e)}")
         
         return pedido
     except ValueError as e:
