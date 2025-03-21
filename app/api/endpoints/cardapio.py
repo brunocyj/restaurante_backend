@@ -229,7 +229,7 @@ def list_produtos(
     *,
     db: Session = Depends(get_db),
     skip: int = Query(0, ge=0, description="Número de registros para pular"),
-    limit: int = Query(100, ge=1, le=100, description="Número máximo de registros para retornar"),
+    limit: int = Query(1000, ge=1, le=1000, description="Número máximo de registros para retornar"),
     categoria_id: Optional[UUID] = Query(None, description="Filtrar por categoria")
 ) -> Any:
     """
