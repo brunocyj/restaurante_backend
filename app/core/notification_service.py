@@ -219,7 +219,7 @@ class NotificationService:
             aggregate=True  # Ativar agregação para itens de pedidos
         )
     
-    def create_order_finalized_notification(self, pedido_id: str, mesa_id: str, total: float) -> Dict[str, Any]:
+    def create_order_finalized_notification(self, pedido_id: str, mesa_id: str, total: float, metodo_pagamento: str) -> Dict[str, Any]:
         """
         Cria uma notificação de pedido finalizado.
         
@@ -237,6 +237,9 @@ class NotificationService:
             "total": total,
             "message": f"Pedido da mesa {mesa_id} finalizado no valor de R$ {total:.2f}"
         }
+
+        if metodo_pagamento:
+            content["metodo_pagamento"] = metodo_pagamento
         
         return self.create_notification(
             notification_type=NotificationType.ORDER_FINALIZED,

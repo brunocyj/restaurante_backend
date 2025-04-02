@@ -35,7 +35,8 @@ def criar_pedido(
             mesa_id=pedido_in.mesa_id,
             itens_data=itens_data,
             observacao_geral=pedido_in.observacao_geral,
-            manual=pedido_in.manual
+            manual=pedido_in.manual,
+            metodo_pagamento=pedido_in.metodo_pagamento
         )
         
         return pedido
@@ -56,6 +57,7 @@ def listar_pedidos(
     mesa_id: Optional[str] = None,
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=100),
+    metodo_pagamento: Optional[str] = None,
     db: Session = Depends(get_db),
 ) -> Any:
     """
@@ -66,7 +68,8 @@ def listar_pedidos(
         skip=skip,
         limit=limit,
         status=status,
-        mesa_id=mesa_id
+        mesa_id=mesa_id,
+        metodo_pagamento=metodo_pagamento
     )
     
     return {
@@ -118,7 +121,8 @@ def atualizar_pedido(
             pedido_id=pedido_id,
             status=pedido_in.status,
             observacao_geral=pedido_in.observacao_geral,
-            mesa_id = pedido_in.mesa_id
+            mesa_id = pedido_in.mesa_id,
+            metodo_pagamento = pedido_in.metodo_pagamento
         )
         
         status_alterado_para_finalizado = pedido_in.status == StatusPedido.FINALIZADO
@@ -144,7 +148,8 @@ def atualizar_pedido(
                 notification = notification_service.create_order_finalized_notification(
                     pedido_id=str(pedido_id),
                     mesa_id=str(pedido.mesa_id),
-                    total=total
+                    total=total,
+                    metodo_pagamento=pedido.metodo_pagamento
                 )
                 
                 print(f"DEBUG - Notificação criada com sucesso: {notification['id']}")

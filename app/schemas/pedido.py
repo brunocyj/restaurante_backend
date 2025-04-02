@@ -8,7 +8,7 @@ from uuid import UUID
 from datetime import datetime
 from decimal import Decimal
 
-from app.models.pedido import StatusPedido
+from app.models.pedido import StatusPedido, MetodoPagamento
 
 # Schemas para ItemPedido
 
@@ -72,6 +72,7 @@ class PedidoCreate(PedidoBase):
     Schema para criar pedido
     """
     itens: List[ItemPedidoCreate]
+    metodo_pagamento: Optional[MetodoPagamento] = None
     
     @validator("itens")
     def validar_itens(cls, v):
@@ -86,7 +87,7 @@ class PedidoUpdate(BaseModel):
     observacao_geral: Optional[str] = None
     status: Optional[StatusPedido] = None
     mesa_id: Optional[str] = None
-
+    metodo_pagamento: Optional[MetodoPagamento] = None
 class Pedido(PedidoBase):
     """
     Schema para pedido
@@ -96,7 +97,7 @@ class Pedido(PedidoBase):
     valor_total: Decimal
     criado_em: datetime
     itens: List[ItemPedido]
-    
+    metodo_pagamento: Optional[MetodoPagamento] = None
     class Config:
         orm_mode = True
 

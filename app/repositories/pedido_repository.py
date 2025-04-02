@@ -8,7 +8,7 @@ from uuid import UUID
 from sqlalchemy import desc
 from decimal import Decimal
 
-from app.models.pedido import Pedido, ItemPedido, StatusPedido
+from app.models.pedido import Pedido, ItemPedido, StatusPedido, MetodoPagamento
 from app.models.cardapio import Produto
 from app.models.mesa import Mesa
 
@@ -21,7 +21,8 @@ class PedidoRepository:
         self.db = db
     
     def criar_pedido(self, mesa_id: str, itens_data: List[Dict[str, Any]], 
-                    observacao_geral: Optional[str] = None, manual: bool = False) -> Pedido:
+                    observacao_geral: Optional[str] = None, manual: bool = False,
+                    metodo_pagamento: Optional[MetodoPagamento] = None) -> Pedido:
         """
         Cria um novo pedido com seus itens
         
@@ -45,7 +46,8 @@ class PedidoRepository:
             status=StatusPedido.ABERTO,
             valor_total=valor_total,
             observacao_geral=observacao_geral,
-            manual=manual
+            manual=manual,
+            metodo_pagamento=metodo_pagamento
         )
         
         self.db.add(pedido)
@@ -95,7 +97,8 @@ class PedidoRepository:
                       skip: int = 0, 
                       limit: int = 100, 
                       status: Optional[StatusPedido] = None,
-                      mesa_id: Optional[str] = None) -> Tuple[List[Pedido], int]:
+                      mesa_id: Optional[str] = None,
+                      metodo_pagamento: Optional[MetodoPagamento] = None) -> Tuple[List[Pedido], int]:
         """
         Lista pedidos com filtros opcionais
         
@@ -116,6 +119,9 @@ class PedidoRepository:
         if mesa_id:
             query = query.filter(Pedido.mesa_id == mesa_id)
         
+        if metodo_pagamento:
+            query = query.filter(Pedido.metodo_pagamento == metodo_pagamento)
+        
         query = query.order_by(desc(Pedido.criado_em))
         
         total = query.count()
@@ -127,7 +133,8 @@ class PedidoRepository:
     def atualizar_pedido(self, pedido_id: UUID, 
                         status: Optional[StatusPedido] = None,
                         observacao_geral: Optional[str] = None,
-                        mesa_id: Optional[str] = None) -> Optional[Pedido]:
+                        mesa_id: Optional[str] = None,
+                        metodo_pagamento: Optional[MetodoPagamento] = None) -> Optional[Pedido]:
         """
         Atualiza um pedido
         
@@ -151,6 +158,9 @@ class PedidoRepository:
 
         if mesa_id is not None:
             pedido.mesa_id = mesa_id
+
+        if metodo_pagamento is not None:
+            pedido.metodo_pagamento = metodo_pagamento
         
         self.db.commit()
         self.db.refresh(pedido)

@@ -21,6 +21,13 @@ class StatusPedido(str, PyEnum):
     FINALIZADO = "FINALIZADO"
     CANCELADO = "CANCELADO"
 
+class MetodoPagamento(str, PyEnum):
+    DINHEIRO = "DINHEIRO"
+    CARTAO_CREDITO = "CARTAO_CREDITO"
+    CARTAO_DEBITO = "CARTAO_DEBITO"
+    PIX = "PIX"
+    OUTROS = "OUTROS"
+
 class Pedido(Base):
     """Modelo para pedidos."""
     
@@ -33,7 +40,8 @@ class Pedido(Base):
     observacao_geral = Column(Text, nullable=True)
     manual = Column(Boolean, default=False)
     criado_em = Column(DateTime, default=get_brasil_now)
-    
+    metodo_pagamento = Column(String(20), nullable=True)
+
     mesa = relationship("Mesa", back_populates="pedidos")
     itens = relationship("ItemPedido", back_populates="pedido", cascade="all, delete-orphan")
     
